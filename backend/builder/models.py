@@ -34,8 +34,8 @@ class Exercise(models.Model):
     slug = models.SlugField(max_length=250, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="exercises", blank=True, null=True)
     # workout related info
-    sets = models.IntegerField(default=4, validators=[MinValueValidator(0), MaxValueValidator(30)])
-    repetitions = models.IntegerField(default=12, validators=[MinValueValidator(0), MaxValueValidator(30)])
+    sets = models.IntegerField(default=4, validators=[MinValueValidator(0), MaxValueValidator(12)])
+    repetitions = models.IntegerField(default=12, validators=[MinValueValidator(0), MaxValueValidator(500)])
     duration = models.FloatField(default=0, blank=True)
     rest_period = models.FloatField(default=0, blank=True, validators=[MinValueValidator(0), MaxValueValidator(999)])
 
@@ -123,7 +123,7 @@ class Superset(models.Model):
         super(Superset, self).save(*args, **kwargs) 
 
 class Workout(models.Model):
-    '''
+    '''o
     Top level model for the builder. Can create relations to multiple exercises and multiple supersets.
     '''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
