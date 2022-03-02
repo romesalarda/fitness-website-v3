@@ -25,7 +25,6 @@ class ExerciseSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         workout = validated_data.pop("workout", None)
         user = validated_data.pop("user", None)
-
         title = validated_data.get("title")
         if workout is not None and workout.exercises.filter(title=title).exists():
             raise serializers.ValidationError({"details":"exercise with this title already exists in workout"})
@@ -37,7 +36,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
 class SupersetSerializer(serializers.ModelSerializer):
     '''Serializer for workout supersets'''
     id = serializers.UUIDField(required=False)
-    exercises = ExerciseSerializer(many=True, required=False)
+    exercises = ExerciseSerializer(many=True, read_only=True)
     categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
@@ -49,7 +48,7 @@ class SupersetSerializer(serializers.ModelSerializer):
         workout = validated_data.pop("workout", None)
         user = validated_data.pop("user", None)
         title = validated_data.get("title")
-        if workout is not None and workout.super_sets.filter(title=title).exists():
+        if workout is not None and workout.supersets.filter(title=title).exists():
             raise serializers.ValidationError({"details":"super set with this title already exists in workout"})
         super_set = Superset.objects.create(user=user, **validated_data)
 
@@ -73,6 +72,7 @@ class WorkoutSerializer(serializers.ModelSerializer):
         if user_workouts is not None and user_workouts.filter(title=validated_data.get("title")).exists():
             raise serializers.ValidationError({"detail":"Workout with that title already exists"})
         workout = self.Meta.model(user=user, **validated_data)
+        workout.save()
         return workout
 
     def update(self, instance, validated_data):
@@ -89,15 +89,15 @@ class WorkoutSerializer(serializers.ModelSerializer):
                 serialized.save()
         # iterate through supersets
         for superset in supersets:
-            super_set_data = dict(**superset)
-            super_set = get_object_or_404(Superset, id=super_set_data.get("id"))
+            superset_data = dict(**superset)
+            superset = get_object_or_404(Superset, id=superset_data.get("id"))
             # save the instance using the exercise serializer
-            serialized = SupersetSerializer(super_set, data=super_set_data, partial=partial)
+            serialized = SupersetSerializer(superset, data=superset_data, partial=partial)
             if serialized.is_valid(raise_exception=True):
                 serialized.save()
         instance.title = validated_data.get("title",instance.title)
         return super().update(instance, validated_data)
 
-class ValidUUIDSerializer(serializers.Serializer):
+class UUIDSerializer(serializers.Serializer):
     '''Serializer used to validate UUID'''
     uuid = serializers.UUIDField()

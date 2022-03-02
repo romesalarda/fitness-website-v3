@@ -123,7 +123,7 @@ class Superset(models.Model):
         super(Superset, self).save(*args, **kwargs) 
 
 class Workout(models.Model):
-    '''o
+    '''
     Top level model for the builder. Can create relations to multiple exercises and multiple supersets.
     '''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
