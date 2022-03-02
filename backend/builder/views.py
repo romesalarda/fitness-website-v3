@@ -1,5 +1,5 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
-# from .utils import filter_queryset, parse_string, order_queryset_by
 # # rest
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -9,34 +9,16 @@ from .serializers import (
     WorkoutSerializer,
     SupersetSerializer,
     ExerciseSerializer, 
-    UUIDSerializer
+    UUIDSerializer,
+    TruncatedWorkoutSerializer,
 )
 from api.permission import UserWorkoutAccessPermission
 from api.pagination import ExercisesPagination, SuperSetPagination, WorkoutPagination
 
-from .models import Workout, Superset, Exercise, Category
+from .models import Workout, Superset, Exercise
 
 from core.utils import parse_string, filter_queryset, order_queryset_by
-
-class RetrieveWorkoutMixin:
-    '''
-    Mixin for retrieving the specified workout using a UUID. Checks permissions after fetch
-    '''
-    def get_workout(self):
-        uuid = self.kwargs.get("uuid")
-        workout = get_object_or_404(Workout, id=uuid)
-        self.check_object_permissions(self.request, workout)
-        return workout
-
-class RetrieveSupersetWorkoutMixin(RetrieveWorkoutMixin):
-    '''
-    Mixin for retrieving the specified superset using a UUID. Checks permissions after fetch
-    '''
-    def get_superset(self):
-        workout = self.get_workout()
-        superset_id = self.kwargs.get("supersetid")
-        superset = get_object_or_404(workout.supersets.all(), id=superset_id)
-        return superset
+from .mixins import RetrieveSupersetWorkoutMixin, RetrieveWorkoutMixin
 
 class WorkoutDetailView(APIView, RetrieveWorkoutMixin):
     '''
@@ -55,18 +37,19 @@ class WorkoutDetailView(APIView, RetrieveWorkoutMixin):
         workout.delete()
         return Response({"detail":"workout deleted"}, status=status.HTTP_204_NO_CONTENT)
 
-    def patch(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
+        #! save triggers here - update will cascade to all parts of the database
         workout = self.get_workout()
-        serialized = self.serializer_class(workout, data=request.data, partial=True)
+        serialized = self.serializer_class(workout, data=request.data)
         if serialized.is_valid(raise_exception=True):
-            serialized.save(partial=True)
+            serialized.save()
         return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 class WorkoutsView(generics.ListCreateAPIView):
     '''
     Create and retrieve a list of a user's workouts
     '''
-    serializer_class = WorkoutSerializer
+    serializer_class = TruncatedWorkoutSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_workouts(self):
@@ -75,15 +58,15 @@ class WorkoutsView(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         workouts = self.get_workouts()
 
-        # search = request.query_params.get("search","")
-        # workouts = filter_queryset(workouts,title__contains=search)
-        # workouts = self.paginate_queryset(workouts)
-        
+        search = request.query_params.get("search","")
+        workouts = filter_queryset(workouts,title__contains=search)
+        workouts = self.paginate_queryset(workouts)
+
         serialized = self.serializer_class(workouts, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serialized.data)
 
     def post(self, request, *args, **kwargs):
-        serialized = self.serializer_class(data=request.data)
+        serialized = WorkoutSerializer(data=request.data)
         if serialized.is_valid(raise_exception=True):
             serialized.save(user_workouts=self.get_workouts(), user=request.user)
         return Response(serialized.data, status=status.HTTP_201_CREATED)
@@ -122,7 +105,9 @@ class WorkoutExercisesView(APIView, RetrieveWorkoutMixin, WorkoutPagination):
         return self.get_paginated_response(serialized.data)
 
 class WorkoutExerciseDetailView(APIView, RetrieveWorkoutMixin, ExercisesPagination):
-
+    '''
+    Retrieve, add, update, and delete exercise in a workout
+    '''
     serializer_class = ExerciseSerializer
     permission_classes = [permissions.IsAuthenticated, UserWorkoutAccessPermission]   
 
@@ -132,14 +117,19 @@ class WorkoutExerciseDetailView(APIView, RetrieveWorkoutMixin, ExercisesPaginati
         exercise = get_object_or_404(workout.exercises.all(), id=exercise_id)
         return exercise
     
-    def get(self, request, *args, **kwargs):
-        # get superset data of a workout
+    def get(self, *args, **kwargs):
         exercise = self.get_exercise()
         serialized = self.serializer_class(exercise)
         return Response(serialized.data, status=status.HTTP_200_OK)
 
+    def put(self, request, *args, **kwargs):
+        exercise = self.get_exercise()
+        serialized = self.serializer_class(exercise, data=request.data)
+        if serialized.is_valid(raise_exception=True):
+            serialized.save()
+            return Response(serialized.data, status=status.HTTP_200_OK)
+
     def patch(self, request, *args, **kwargs):
-        # update exercise
         exercise = self.get_exercise()
         serialized = self.serializer_class(exercise, data=request.data, partial=True)
         if serialized.is_valid(raise_exception=True):
@@ -151,8 +141,6 @@ class WorkoutExerciseDetailView(APIView, RetrieveWorkoutMixin, ExercisesPaginati
         exercise = self.get_exercise()  
         self.get_workout().exercises.remove(exercise)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 
 class WorkoutSupersetsView(APIView, RetrieveWorkoutMixin, SuperSetPagination):
     '''
@@ -166,8 +154,7 @@ class WorkoutSupersetsView(APIView, RetrieveWorkoutMixin, SuperSetPagination):
         workout = self.get_workout() 
         serialized = self.serializer_class(data=request.data)
         if serialized.is_valid(raise_exception=True):
-            super_set = serialized.save(workout=workout, user=request.user)
-            workout.supersets.add(super_set)
+            superset = serialized.save(workout=workout, user=request.user)
             return Response(status=status.HTTP_201_CREATED)
 
     def put(self, request, *args, **kwargs):
@@ -176,8 +163,8 @@ class WorkoutSupersetsView(APIView, RetrieveWorkoutMixin, SuperSetPagination):
         serialized = UUIDSerializer(data=request.data)
         if serialized.is_valid(raise_exception=True):
             id = serialized.data.get("uuid")
-            super_set = get_object_or_404(Superset, id=id)
-            workout.supersets.add(super_set)
+            superset = get_object_or_404(Superset, id=id)
+            workout.supersets.add(superset)
             return Response(status=status.HTTP_200_OK)
 
     def get(self, request, *args, **kwargs):
@@ -185,7 +172,7 @@ class WorkoutSupersetsView(APIView, RetrieveWorkoutMixin, SuperSetPagination):
         workout = self.get_workout()
         supersets = self.paginate_queryset(workout.supersets.all(), request, view=self)
         serialized = self.serializer_class(supersets, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serialized.data)
 
 class WorkoutSupersetDetailView(APIView, RetrieveSupersetWorkoutMixin):
     '''
@@ -195,7 +182,6 @@ class WorkoutSupersetDetailView(APIView, RetrieveSupersetWorkoutMixin):
     serializer_class = SupersetSerializer
     permission_classes = [permissions.IsAuthenticated, UserWorkoutAccessPermission] 
 
-    
     def get(self, *args, **kwargs):
         # get superset data of a workout
         super_set = self.get_superset()
@@ -222,7 +208,7 @@ class WorkoutSupersetDetailView(APIView, RetrieveSupersetWorkoutMixin):
     def delete(self, *args, **kwargs):
         # remove superset from workout
         superset = self.get_superset()  
-        self.get_workout().supersets.remove(superset)
+        superset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class WorkoutSupersetExercisesView(APIView, RetrieveSupersetWorkoutMixin, WorkoutPagination):
@@ -294,8 +280,9 @@ class WorkoutSupersetExercisesDetailView(APIView, RetrieveSupersetWorkoutMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ExerciseQueryView(APIView, ExercisesPagination):
-   
-    # has the get method that supports special querying for searches
+    '''
+    Special view for querying exercises
+    '''
     serializer_class = ExerciseSerializer
     permission_classes = [permissions.IsAuthenticated]   
 
@@ -304,7 +291,7 @@ class ExerciseQueryView(APIView, ExercisesPagination):
     def get(self, request, *args, **kwargs):
         # get list of all exercises
         search = request.query_params.get("search","")
-        exercises = Exercise.objects.filter(title__contains=search, user=request.user)
+        exercises = Exercise.objects.filter(Q(user=request.user)|Q(user=None), title__contains=search)
         # get extra params
         level = request.query_params.get("level","")
         direction = request.query_params.get("direction","")

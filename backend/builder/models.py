@@ -38,7 +38,7 @@ class Exercise(models.Model):
     repetitions = models.IntegerField(default=12, validators=[MinValueValidator(0), MaxValueValidator(500)])
     duration = models.FloatField(default=0, blank=True)
     rest_period = models.FloatField(default=0, blank=True, validators=[MinValueValidator(0), MaxValueValidator(999)])
-
+    weight = models.FloatField(default=0, blank=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
     # determine direction of push or pull
     class Direction(models.TextChoices):
         HORIZONTAL = "1", "HORIZONTAL"
@@ -93,6 +93,7 @@ class Superset(models.Model):
     title = models.CharField(max_length=30)
     slug = models.SlugField(max_length=250, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="supersets", blank=True, null=True)
+    workout = models.ForeignKey("Workout", on_delete=models.CASCADE, related_name="supersets", null=True)
     # meta related data
     created = models.DateTimeField(default=timezone.now)
     description = models.TextField(max_length=300, null=True, blank=True)
@@ -136,7 +137,6 @@ class Workout(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="workouts")
     exercises = models.ManyToManyField(Exercise, related_name="workouts", blank=True)
-    supersets = models.ManyToManyField(Superset, related_name="workouts", blank=True)
     
     class Meta:
         ordering = ["-created"]
