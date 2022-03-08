@@ -29,5 +29,6 @@ urlpatterns = [
 
     path("api/", include("builder.urls"), name="builder-urls"),
     path("api/", include("workout_session.urls"), name="workout-session-urls"),
+    path("api/", include("user.urls"), name="user-urls"),
 
 ]
