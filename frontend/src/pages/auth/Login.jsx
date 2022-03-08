@@ -29,9 +29,6 @@ export default function Login() {
     const [formData, updateFormData] = useState(initialFormData);
 
     useEffect(() => {
-        if (localStorage.getItem("refresh_token")) {
-            navigate("/")
-        }
 
     }, [navigate])
 

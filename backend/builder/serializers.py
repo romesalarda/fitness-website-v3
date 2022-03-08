@@ -146,8 +146,9 @@ class TruncatedWorkoutSerializer(serializers.ModelSerializer):
     workouts if getting all the data is unnecessary.
     '''
     user = serializers.ReadOnlyField(source="user.email")
-    created = serializers.ReadOnlyField(source="workout.created")
+    created = serializers.ReadOnlyField()
+    last_updated = serializers.ReadOnlyField()
 
     class Meta:
         model = Workout
-        fields = ("id","title","user","slug","created","description")
+        fields = ("id","title","user","slug","created","last_updated","description")

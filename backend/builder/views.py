@@ -61,7 +61,7 @@ class WorkoutsView(generics.ListCreateAPIView):
         search = request.query_params.get("search","")
         workouts = filter_queryset(workouts,title__contains=search)
         workouts = self.paginate_queryset(workouts)
-
+        
         serialized = self.serializer_class(workouts, many=True)
         return self.get_paginated_response(serialized.data)
 

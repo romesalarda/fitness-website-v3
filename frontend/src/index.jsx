@@ -11,23 +11,43 @@ import Register from './pages/auth/Register';
 import Logout from './pages/auth/Logout';
 import Profile from './pages/auth/Profile';
 // builder views
+import Dashboard from './pages/main/Dashboard';
+
+import NavigationBar from './components/misc/NavigationBar'
+
+import { QueryClientProvider, QueryClient } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.render(
   <Router>
-    <React.StrictMode>
-      <Routes>
-        <Route exact path="/" element={<App />} />
+    <QueryClientProvider client={queryClient}>
+      <React.StrictMode>
+        <NavigationBar />
+        <Routes>
+          <Route exact path="/" element={<App />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/my-profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/my-profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* <Route path="/my-workouts/:slug/edit" element={<EditWorkoutView />} />
-        <Route path="/my-workouts/create-workout" element={<CreateWorkoutView />} /> */}
+          {/* <Route path="/my-workouts/:slug/edit" element={<EditWorkoutView />} />
+          <Route path="/my-workouts/create-workout" element={<CreateWorkoutView />} /> */}
 
-      </Routes>
-    </React.StrictMode>
+        </Routes>
+      </React.StrictMode>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   </Router>,
   document.getElementById('root')
 );
