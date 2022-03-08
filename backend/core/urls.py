@@ -27,5 +27,7 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path("api/", include("builder.urls"), name="builder-urls")
+    path("api/", include("builder.urls"), name="builder-urls"),
+    path("api/", include("workout_session.urls"), name="workout-session-urls"),
+
 ]

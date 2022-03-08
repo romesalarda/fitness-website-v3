@@ -10,17 +10,19 @@ from .models import WorkoutSession, SessionExercise, SessionSuperset
 def populate_session(sender, instance, created, **kwargs):
     '''
     Signal used to populate the exercises and supersets of a session so that
-    it is ready for serialization. Only run on creation of a workout session.
+    it is ready for the frontend. Only run on creation of a workout session.
     '''
     if created:
-        exercise_targets = ("title","sets","repetitions","duration","rest_period")
+        exercise_targets = ("title","sets","repetitions","duration","weight","rest_period")
         workout = instance.workout
         # populate exercises
         for exercise in workout.exercises.all().values(*exercise_targets):
+            print(exercise)
             sets = exercise.pop("sets")
             populate_data = {
                 "rep":exercise.pop("repetitions"),
                 "dur":exercise.pop("duration"),
+                "wgt":exercise.pop("weight"),
                 "cmplt":False
             }
             populated_sets = [populate_data for _ in range(sets)]
@@ -33,9 +35,11 @@ def populate_session(sender, instance, created, **kwargs):
             # for each exercise, create a dictionary with the title and sets as a list populated
             for exercise in exercises:
                 sets = exercise.get("sets")
+                print(sets)
                 populate_data = {
                     "rep":exercise.get("repetitions"),
-                    "dur":exercise.get("duration"),
+                    "dur":exercise.get("duration"), 
+                    "wgt":exercise.get("weight"),
                     "cmplt":False
                 }
                 populated_sets = [populate_data for _ in range(sets)]
