@@ -152,7 +152,7 @@ function WorkoutBuilder(any) {
                     </Grid>
                     <Grid item md>
                         {/* area to see current workouts */}
-                        <Paper elevation={3} sx={{ bgcolor: "lightgrey", minHeight: "50vh", padding: 1 }}>
+                        <Paper elevation={3} sx={{ bgcolor: "darkgrey", minHeight: "50vh", padding: 1 }}>
                             <ExerciseInput />
                             <WorkoutExercises workoutID={params.uuid} />
                         </Paper>

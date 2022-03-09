@@ -81,7 +81,7 @@ export default function NavigationBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.name} onClick={() => navigate("/" + page.url.toLowerCase())}>
+                                <MenuItem key={page.name} onClick={() => navigate("/" + page.url.toLowerCase()) + "/"}>
                                     <Typography textAlign="center">{page.name}</Typography>
                                 </MenuItem>
                             ))}

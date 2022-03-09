@@ -6,9 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
-
+import FormControl from '@mui/material/FormControl'
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-
+import { Box, Stack } from '@mui/material'
 
 // create new set
 export default function ExerciseInput({ handleCreate, handleChangeInput, value }) {
@@ -18,50 +19,64 @@ export default function ExerciseInput({ handleCreate, handleChangeInput, value }
             sx={{ p: '10px 4px', display: 'flex', alignItems: 'center', margin: 2 }}
             onSubmit={handleCreate}
         >
-            <TextField
-                sx={{ ml: 1, flex: 3 }}
-                placeholder="Create new exercise"
-                inputProps={{ 'aria-label': 'create new set' }}
-                fullWidth
-                size='small'
-                required
-                value={value}
-                onChange={handleChangeInput}
-                variant="standard"
-            />
-            <TextField
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Repetitions"
-                type="number"
-                inputProps={{ 'aria-label': 'repetitions' }}
-                fullWidth
-                size='small'
-                required
-                defaultValue={12}
-                variant="standard"
-                InputProps={{ inputProps: { min: 1 } }}
-                label="repetitions"
-            />
-            <TextField
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Sets"
-                inputProps={{ 'aria-label': 'sets' }}
-                fullWidth
-                size='small'
-                required
-                type="number"
-                InputProps={{ inputProps: { min: 0 } }}
-                defaultValue={4}
-                variant="standard"
-                label="sets"
-            />
-            <FormGroup sx={{ ml: 1, flex: 1 }}>
-                <FormControlLabel control={<Switch label="public" />} label="Global" />
-            </FormGroup>
+            <FormControl>
+
+                <Stack direction="row">
+                    <TextField
+                        placeholder="Create new exercise"
+                        sx={{ margin: 1 }}
+                        inputProps={{ 'aria-label': 'create new set' }}
+                        fullWidth
+                        size='small'
+                        required
+                        value={value}
+                        onChange={handleChangeInput}
+                        variant="standard"
+
+                    />
+
+
+                </Stack>
+
+                <Stack direction="row">
+                    <TextField
+                        placeholder="Repetitions"
+                        type="number"
+                        inputProps={{ 'aria-label': 'repetitions' }}
+                        sx={{ margin: 1 }}
+                        fullWidth
+                        size='small'
+                        required
+                        defaultValue={12}
+                        variant="outlined"
+                        InputProps={{ inputProps: { min: 1 } }}
+                        label="repetitions"
+                    />
+                    <TextField
+
+                        placeholder="Sets"
+                        inputProps={{ 'aria-label': 'sets' }}
+                        sx={{ margin: 1 }}
+                        fullWidth
+                        size='small'
+                        required
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        defaultValue={4}
+                        variant="outlined"
+                        label="sets"
+                    />
+
+                </Stack>
+
+            </FormControl>
             <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
                 <AddIcon />
             </IconButton>
+            <FormGroup sx={{ ml: 1, flex: 1 }}>
+                <FormControlLabel control={<Switch label="public" />} label="Global" />
+            </FormGroup>
 
-        </Paper>
+        </Paper >
     )
 }
