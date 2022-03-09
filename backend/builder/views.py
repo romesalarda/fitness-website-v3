@@ -71,7 +71,7 @@ class WorkoutsView(generics.ListCreateAPIView):
             serialized.save(user_workouts=self.get_workouts(), user=request.user)
         return Response(serialized.data, status=status.HTTP_201_CREATED)
 
-class WorkoutExercisesView(APIView, RetrieveWorkoutMixin, WorkoutPagination):
+class WorkoutExercisesView(APIView, RetrieveWorkoutMixin, ExercisesPagination):
     '''
     Create, add, and retrieve exercises and append existing exercises to a workout
     '''

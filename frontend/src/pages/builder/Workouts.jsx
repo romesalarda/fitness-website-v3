@@ -1,11 +1,11 @@
 import React from 'react';
 import { useQuery } from 'react-query'
 import axiosInstance from '../../axios';
-
+// mui
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 // components
-import Loading from '../../components/misc/Loading';
+import Loading from '../../components/Loading';
 import WorkoutItem from './WorkoutItem';
 
 export default function Workouts() {

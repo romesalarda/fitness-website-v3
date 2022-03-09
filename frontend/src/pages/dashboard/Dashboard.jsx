@@ -12,8 +12,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 import React, { useState } from 'react';
 
-import axiosInstance from '../../axios';
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+// import axiosInstance from '../../axios';
+// import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 import { useNavigate } from 'react-router-dom';
 
@@ -22,11 +22,12 @@ import Copyright from '../../components/misc/Copyright';
 import Drawer from '../../components/misc/Drawer';
 import Workouts from '../builder/Workouts';
 
-
-
 const mdTheme = createTheme();
+
 export default function Dashboard() {
+
     const navigate = useNavigate()
+    // drawer state
     const [open, setOpen] = useState(true)
     const toggleDrawer = () => {
         setOpen(!open);
@@ -73,7 +74,7 @@ export default function Dashboard() {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
-                            {/* Chart */}
+                            {/* Workouts */}
                             <Grid item xs={12} md={8} lg={9}>
                                 <Paper
                                     sx={{
@@ -85,7 +86,7 @@ export default function Dashboard() {
                                     <Workouts />
                                 </Paper>
                             </Grid>
-                            {/* Recent Deposits */}
+                            {/* favourite sessions */}
                             <Grid item xs={12} md={4} lg={3}>
                                 <Paper
                                     sx={{
@@ -98,7 +99,7 @@ export default function Dashboard() {
 
                                 </Paper>
                             </Grid>
-                            {/* Recent Orders */}
+
 
                         </Grid>
                         <Copyright sx={{ pt: 4 }} />

@@ -11,10 +11,11 @@ import Register from './pages/auth/Register';
 import Logout from './pages/auth/Logout';
 import Profile from './pages/auth/Profile';
 // builder views
-import Dashboard from './pages/main/Dashboard';
+import Dashboard from './pages/dashboard/Dashboard';
+import WorkoutBuilder from './pages/builder/WorkoutBuilder';
 
-import NavigationBar from './components/misc/NavigationBar'
-
+import NavigationBar from './components/NavigationBar'
+// react query
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
@@ -41,8 +42,8 @@ ReactDOM.render(
           <Route path="/my-profile" element={<Profile />} />
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* <Route path="/my-workouts/:slug/edit" element={<EditWorkoutView />} />
-          <Route path="/my-workouts/create-workout" element={<CreateWorkoutView />} /> */}
+          <Route path="/my-workouts/:uuid/edit" element={<WorkoutBuilder />} />
+          {/* <Route path="/my-workouts/create-workout" element={<CreateWorkoutView />} /> */}
 
         </Routes>
       </React.StrictMode>

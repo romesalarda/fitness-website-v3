@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 const settings = [{ name: "Profile", url: "my-profile" }, { name: "Settings", url: "settings" }, { name: "Logout", url: "logout" }];
-const pages = [{ name: "Workouts", url: "" }];
+const pages = [{ name: "Dashboard", url: "dashboard" }];
 
 export default function NavigationBar() {
     const navigate = useNavigate()
