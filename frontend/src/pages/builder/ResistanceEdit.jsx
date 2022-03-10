@@ -16,12 +16,8 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function ResistanceEdit({ data, handleSwitch, updateTextFields }) {
-    const [exerciseData, setExerciseData] = useState(data)
+export default function ResistanceEdit({ data, handleSwitch, updateTextFields, updateSelectFields }) {
     // const [errorMessage, setErrorMessage] = useState(null)
-
-
-
     return (
         <Card sx={{ minWidth: 275, bgcolor: "lightgrey", margin: 2 }} variant="outlined">
             <CardContent>
@@ -42,9 +38,9 @@ export default function ResistanceEdit({ data, handleSwitch, updateTextFields })
                                 <Stack spacing={2} sx={{ padding: 1 }} direction="row">
                                     <TextField
                                         id="repetitions"
-                                        label="Repetitions"
+                                        label="repetitions"
                                         variant="outlined"
-                                        type="text"
+                                        type="number"
                                         size="large"
                                         value={data.repetitions}
                                         onChange={updateTextFields}
@@ -54,22 +50,23 @@ export default function ResistanceEdit({ data, handleSwitch, updateTextFields })
                                         <InputLabel id="repetiton-unit-lable">Unit</InputLabel>
                                         <Select
                                             labelId="repetiton-unit-lable"
-                                            id="repetiton-unit-select"
-                                            value={1}
+                                            id="repetitions_unit"
+                                            name="repetitions_unit"
+                                            value={data.repetitions_unit}
                                             label="Unit"
-                                            onChange={updateTextFields}
+                                            onChange={updateSelectFields}
                                             sx={{ flex: 2 }}
                                         >
-                                            <MenuItem value={1}>Reps</MenuItem>
-                                            <MenuItem value={2}>Until failure</MenuItem>
+                                            <MenuItem value={"1"}>Reps</MenuItem>
+                                            <MenuItem value={"2"}>Until failure</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Stack>
                                 <TextField
                                     id="sets"
-                                    label="Sets"
+                                    label="sets"
                                     variant="outlined"
-                                    type="text"
+                                    type="number"
                                     size="large"
                                     onChange={updateTextFields}
                                     sx={{ margin: 1 }}
@@ -85,24 +82,27 @@ export default function ResistanceEdit({ data, handleSwitch, updateTextFields })
                             <Stack spacing={2} sx={{ padding: 1 }} direction="row">
                                 <TextField
                                     id="weight"
-                                    label="Weight"
+                                    label="weight"
                                     variant="outlined"
                                     type="number"
                                     size="large"
                                     sx={{ flex: 6 }}
                                     value={data.weight}
+                                    onChange={updateTextFields}
                                 />
-                                <FormControl >
+                                <FormControl>
                                     <InputLabel id="weight-unit-lable">Unit</InputLabel>
                                     <Select
                                         labelId="weight-unit-lable"
-                                        id="weight-unit-select"
-                                        value={"kg"}
-                                        label="Unit"
+                                        id="weight_unit"
+                                        value={data.weight_unit}
+                                        label="unit"
+                                        name="weight_unit"
                                         sx={{ flex: 2 }}
+                                        onChange={updateSelectFields}
                                     >
-                                        <MenuItem value={"kg"}>Kg</MenuItem>
-                                        <MenuItem value={"pb"}>Pb</MenuItem>
+                                        <MenuItem value={"1"}>Kg</MenuItem>
+                                        <MenuItem value={"2"}>Pb</MenuItem>
                                     </Select>
                                 </FormControl>
 

@@ -34,11 +34,13 @@ class Exercise(models.Model):
     slug = models.SlugField(max_length=250, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="exercises", blank=True, null=True)
     # workout related info
-    sets = models.IntegerField(default=4, validators=[MinValueValidator(0), MaxValueValidator(12)])
-    repetitions = models.IntegerField(default=12, validators=[MinValueValidator(0), MaxValueValidator(500)])
-    duration = models.FloatField(default=0, blank=True)
-    rest_period = models.FloatField(default=0, blank=True, validators=[MinValueValidator(0), MaxValueValidator(999)])
-    weight = models.FloatField(default=0, blank=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
+    sets = models.PositiveIntegerField(default=4, validators=[MinValueValidator(0), MaxValueValidator(12)])
+    repetitions = models.PositiveIntegerField(default=12, validators=[MinValueValidator(0), MaxValueValidator(500)])
+    distance = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(500)])
+
+    duration = models.FloatField(default=30, blank=True)
+    rest_period = models.FloatField(default=60, blank=True, validators=[MinValueValidator(0), MaxValueValidator(999)])
+    weight = models.FloatField(default=5, blank=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
     # determine direction of push or pull
     class Direction(models.TextChoices):
         HORIZONTAL = "1", "HORIZONTAL"
@@ -49,13 +51,39 @@ class Exercise(models.Model):
         LOWER = "1", "LOWER"
         UPPER = "2", "UPPER"
         CORE = "3", "CORE"
-    target = models.CharField(max_length=2, choices=Target.choices, blank=True, null=True)
+    target = models.CharField(max_length=3, choices=Target.choices, blank=True, null=True)
     # what level the exercise is
     class Level(models.TextChoices):
         BEGINNER = "1", "BEGINNER"
         INTERMEDIATE = "2", "INTERMEDIATE"
         ADVANCE = "3", "ADVANCE"
-    level = models.CharField(max_length=2, choices=Level.choices, blank=True, null=True)
+    level = models.CharField(max_length=3, choices=Level.choices, blank=True, null=True)
+
+    # units
+    class WeightUnit(models.TextChoices):
+        KG = "1", "KILOGRAMS"
+        PB = "3", "POUNDS"
+    weight_unit = models.CharField(max_length=2, 
+    default=WeightUnit.KG,
+    choices=WeightUnit.choices, blank=True, null=True)
+
+    class CardioUnit(models.TextChoices):
+        ME = "1", "METERS"
+        KM = "2", "KILOMETERS"
+    cardio_unit = models.CharField(max_length=2, 
+    default=CardioUnit.ME,
+    choices=CardioUnit.choices, blank=True, null=True)
+
+    class RepetitionsUnit(models.TextChoices):
+        REPS = "1", "REPS"
+        UF = "2", "UNTIL FAILURE"
+        SE = "3", "SECONDS"
+        MU = "4", "MINUTES"
+    repetitions_unit = models.CharField(max_length=2,
+    default=RepetitionsUnit.REPS,
+    choices=RepetitionsUnit.choices, blank=True, null=True)
+
+    resistance_view = models.BooleanField(default=True, blank=True, null=True)
 
     categories = models.ManyToManyField(Category, related_name="exercises", blank=True)
     # extra data

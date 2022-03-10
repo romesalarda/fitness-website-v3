@@ -11,6 +11,23 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("id","title","description")
 
+
+class ExerciseListSerializer(serializers.ListSerializer):
+    '''
+    Serializer to handle custom bulk exercise update
+    '''
+    def update(self, queryset, validated_data):
+        exercise_mapping = {exercise.id: exercise for exercise in queryset}
+        data_mapping = {item['id']: item for item in validated_data}
+        
+        result = []
+        for exercise_id, data in data_mapping.items():
+            exercise = exercise_mapping.get(exercise_id, None)
+            if exercise is not None:
+                result.append(self.child.update(exercise, data))
+        return result
+
+
 class ExerciseSerializer(serializers.ModelSerializer):
     '''serializer for exercises'''
 
@@ -25,8 +42,10 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = (
             "id","title","sets","repetitions","duration","public",
             "categories","user","level","target","direction","rest_period",
-            "copy_only","weight","category_ids",
+            "copy_only","weight","category_ids","weight_unit","cardio_unit",
+            "repetitions_unit","resistance_view","distance"
         )
+        list_serializer_class = ExerciseListSerializer
 
     def create(self, validated_data):
         workout = validated_data.pop("workout", None)
@@ -57,8 +76,8 @@ class ExerciseSerializer(serializers.ModelSerializer):
             instance.categories.set,
             error_msg="invalid category ids"
         )
-        check_duplicates(workout, "exercises", title=title, 
-        err_msg="exercise with the title '%s' already exists in workout" % title)
+        # check_duplicates(workout, "exercises", title=title, 
+        # err_msg="exercise with the title '%s' already exists in workout" % title)
 
         return super().update(instance, validated_data)
 

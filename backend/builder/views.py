@@ -90,12 +90,19 @@ class WorkoutExercisesView(APIView, RetrieveWorkoutMixin, ExercisesPagination):
     def put(self, request, *args, **kwargs):
         # add an already existing exercise to the workout
         workout = self.get_workout()
-        serialized = UUIDSerializer(data=request.data)
+        # serialized = UUIDSerializer(data=request.data)
+        # if serialized.is_valid(raise_exception=True):
+        #     id = serialized.data.get("uuid")
+        #     exercise = get_object_or_404(Exercise, id=id)
+        #     workout.exercises.add(exercise)
+        #     return Response(status=status.HTTP_200_OK)
+        exercises = workout.exercises.all()
+        serialized = self.serializer_class(exercises, data=request.data, many=True)
         if serialized.is_valid(raise_exception=True):
-            id = serialized.data.get("uuid")
-            exercise = get_object_or_404(Exercise, id=id)
-            workout.exercises.add(exercise)
-            return Response(status=status.HTTP_200_OK)
+            serialized.save(workout=workout)
+            return Response(serialized.data, status=status.HTTP_200_OK)
+
+    
 
     def get(self, request, *args, **kwargs):
         # get all exercises of the workout

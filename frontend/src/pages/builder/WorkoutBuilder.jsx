@@ -160,11 +160,7 @@ function WorkoutBuilder(any) {
 
                 </Grid>
 
-                <Fab color="success" aria-label="add" sx={{
-                    position: "fixed", right: "5vh", bottom: "5vh", width: "10vh", height: "10vh"
-                }} size="large" onClick={() => console.log("save workout")}>
-                    Save <SaveAltIcon />
-                </Fab>
+
             </Box>
         </React.Fragment>
 

@@ -18,32 +18,50 @@ import EditIcon from '@mui/icons-material/Edit';
 import ResistanceEdit from './ResistanceEdit';
 import CardioEdit from './CardioEdit';
 
-export default function ExerciseItem({ data }) {
+export default function ExerciseItem({ data, updateWorkout }) {
     const [exerciseData, setExerciseData] = useState(data)
     // const [errorMessage, setErrorMessage] = useState(null)
-
     const updateTextFields = (e) => {
-        // setExerciseData({
-        //     ...exerciseData,
-        //     [e.target.id]: e.target.value.trim(),
-        // });
-        console.log(e.target.value)
+        setExerciseData({
+            ...exerciseData,
+            [e.target.id]: e.target.value.trim(),
+        });
+
     };
+
+    const updateSelectFields = (e) => {
+        console.log(e.target.name, e.target.value);
+        setExerciseData({
+            ...exerciseData,
+            [e.target.name]: e.target.value.trim(),
+        });
+    }
+
+    useEffect(() => {
+        updateWorkout(exerciseData)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [exerciseData])
+
+
+
 
     const [showResistanceEdit, setShowResistanceEdit] = useState(true)
 
     const handleSwitch = (value) => {
         setShowResistanceEdit(value)
+        setExerciseData({ ...exerciseData, resistance_view: value })
     }
 
 
     return (
         <>
             {showResistanceEdit ?
-                <ResistanceEdit data={data} handleSwitch={handleSwitch}
-                    updateTextFields={updateTextFields} /> :
-                <CardioEdit data={data} handleSwitch={handleSwitch}
-                    updateTextFields={updateTextFields} />}
+                <ResistanceEdit data={exerciseData} handleSwitch={handleSwitch}
+                    updateTextFields={updateTextFields}
+                    updateSelectFields={updateSelectFields} /> :
+                <CardioEdit data={exerciseData} handleSwitch={handleSwitch}
+                    updateTextFields={updateTextFields}
+                    updateSelectFields={updateSelectFields} />}
         </>
     )
 }
