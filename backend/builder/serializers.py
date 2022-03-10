@@ -43,7 +43,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "id","title","sets","repetitions","duration","public",
             "categories","user","level","target","direction","rest_period",
             "copy_only","weight","category_ids","weight_unit","cardio_unit",
-            "repetitions_unit","resistance_view","distance"
+            "repetitions_unit","resistance_view","distance","description","created"
         )
         list_serializer_class = ExerciseListSerializer
 

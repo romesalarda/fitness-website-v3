@@ -16,7 +16,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function CardioEdit({ data, handleSwitch, updateTextFields, updateSelectFields }) {
+export default function CardioEdit({ data, handleSwitch, updateTextFields, updateSelectFields, handleRemoveExercise, updateCheckedFields }) {
 
     return (
         <Card sx={{ minWidth: 275, bgcolor: "lightgrey", margin: 2 }} variant="outlined">
@@ -119,15 +119,16 @@ export default function CardioEdit({ data, handleSwitch, updateTextFields, updat
                 <IconButton>
                     <EditIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={handleRemoveExercise}>
                     <DeleteIcon />
                 </IconButton>
                 <Checkbox
                     id="public"
 
-                    checked={true}
+                    checked={data.public}
                     icon={<PublicOffIcon />}
                     checkedIcon={<PublicIcon />}
+                    onChange={updateCheckedFields}
                 />
                 <IconButton onClick={() => handleSwitch(true)}>
                     <SwapHorizIcon />

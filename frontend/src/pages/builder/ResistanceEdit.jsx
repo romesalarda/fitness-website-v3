@@ -16,7 +16,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function ResistanceEdit({ data, handleSwitch, updateTextFields, updateSelectFields }) {
+export default function ResistanceEdit({ data, handleSwitch, updateTextFields, updateSelectFields, handleRemoveExercise, updateCheckedFields, openExerciseEditor }) {
     // const [errorMessage, setErrorMessage] = useState(null)
     return (
         <Card sx={{ minWidth: 275, bgcolor: "lightgrey", margin: 2 }} variant="outlined">
@@ -115,18 +115,19 @@ export default function ResistanceEdit({ data, handleSwitch, updateTextFields, u
             <Divider></Divider>
             <CardActions disableSpacing sx={{ justifyContent: "right" }}>
 
-                <IconButton>
+                <IconButton onClick={openExerciseEditor}>
                     <EditIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={handleRemoveExercise}>
                     <DeleteIcon />
                 </IconButton>
                 <Checkbox
                     id="public"
-
-                    checked={true}
+                    name="public"
+                    checked={data.public}
                     icon={<PublicOffIcon />}
                     checkedIcon={<PublicIcon />}
+                    onChange={updateCheckedFields}
                 />
                 <IconButton onClick={() => handleSwitch(false)}>
                     <SwapHorizIcon />
