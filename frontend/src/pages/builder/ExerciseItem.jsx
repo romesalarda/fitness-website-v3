@@ -15,129 +15,35 @@ import { MenuItem, Select, InputLabel, FormControl, IconButton, Divider } from '
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 import EditIcon from '@mui/icons-material/Edit';
+import ResistanceEdit from './ResistanceEdit';
+import CardioEdit from './CardioEdit';
 
 export default function ExerciseItem({ data }) {
     const [exerciseData, setExerciseData] = useState(data)
     // const [errorMessage, setErrorMessage] = useState(null)
 
-    const updateExercise = (e) => {
-        setExerciseData({
-            ...exerciseData,
-            [e.target.id]: e.target.value.trim(),
-        });
+    const updateTextFields = (e) => {
+        // setExerciseData({
+        //     ...exerciseData,
+        //     [e.target.id]: e.target.value.trim(),
+        // });
+        console.log(e.target.value)
     };
+
+    const [showResistanceEdit, setShowResistanceEdit] = useState(true)
+
+    const handleSwitch = (value) => {
+        setShowResistanceEdit(value)
+    }
 
 
     return (
-        <Card sx={{ minWidth: 275, bgcolor: "lightgrey", margin: 2 }} variant="outlined">
-            <CardContent>
-                <Grid container>
-                    <TextField
-                        id="title"
-                        value={data.title}
-                        variant="standard"
-                        type="text"
-                        size="small"
-                        fullWidth
-                        sx={{ margin: 1 }}
-                    />
-                    <Grid item xs={3} md={6}>
-                        <Card sx={{ margin: 1 }}>
-                            <Stack>
-                                <Stack spacing={2} sx={{ padding: 1 }} direction="row">
-                                    <TextField
-                                        id="repetitions"
-                                        label="Repetitions"
-                                        variant="outlined"
-                                        type="text"
-                                        size="large"
-                                        onChange={updateExercise}
-                                        sx={{ flex: 6 }}
-                                    />
-                                    <FormControl>
-                                        <InputLabel id="repetiton-unit-lable">Unit</InputLabel>
-                                        <Select
-                                            labelId="repetiton-unit-lable"
-                                            id="repetiton-unit-select"
-                                            value={1}
-                                            label="Unit"
-                                            onChange={updateExercise}
-                                            sx={{ flex: 2 }}
-                                        >
-                                            <MenuItem value={1}>Reps</MenuItem>
-                                            <MenuItem value={2}>Until failure</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Stack>
-                                <TextField
-                                    id="sets"
-                                    label="Sets"
-                                    variant="outlined"
-                                    type="text"
-                                    size="large"
-                                    onChange={updateExercise}
-                                    sx={{ margin: 1 }}
-                                />
-                            </Stack>
-
-                        </Card>
-
-                    </Grid>
-                    <Grid item xs={3} md={6}>
-                        <Card sx={{ margin: 1 }}>
-                            <Stack spacing={2} sx={{ padding: 1 }} direction="row">
-                                <TextField
-                                    id="weight"
-                                    label="Weight"
-                                    variant="outlined"
-                                    type="number"
-                                    size="large"
-                                    onChange={updateExercise}
-                                    sx={{ flex: 6 }}
-                                />
-                                <FormControl >
-                                    <InputLabel id="weight-unit-lable">Unit</InputLabel>
-                                    <Select
-                                        labelId="weight-unit-lable"
-                                        id="weight-unit-select"
-                                        value={1}
-                                        label="Unit"
-                                        onChange={updateExercise}
-                                        sx={{ flex: 2 }}
-                                    >
-                                        <MenuItem value={1}>Kg</MenuItem>
-                                        <MenuItem value={2}>Pb</MenuItem>
-                                    </Select>
-                                </FormControl>
-
-                            </Stack>
-                        </Card>
-
-                    </Grid>
-                </Grid>
-            </CardContent>
-            <Divider></Divider>
-            <CardActions disableSpacing sx={{ justifyContent: "right" }}>
-
-                <IconButton>
-                    <EditIcon />
-                </IconButton>
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-                <Checkbox
-                    id="public"
-
-                    checked={true}
-                    icon={<PublicOffIcon />}
-                    checkedIcon={<PublicIcon />}
-                />
-                <IconButton >
-                    <SwapHorizIcon />
-                </IconButton>
-
-
-            </CardActions>
-        </Card>
+        <>
+            {showResistanceEdit ?
+                <ResistanceEdit data={data} handleSwitch={handleSwitch}
+                    updateTextFields={updateTextFields} /> :
+                <CardioEdit data={data} handleSwitch={handleSwitch}
+                    updateTextFields={updateTextFields} />}
+        </>
     )
 }

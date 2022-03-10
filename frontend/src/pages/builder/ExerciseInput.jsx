@@ -10,6 +10,10 @@ import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { Box, Stack } from '@mui/material'
+import Checkbox from '@mui/material/Checkbox';
+import PublicIcon from '@mui/icons-material/Public';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 // create new set
 export default function ExerciseInput({ handleCreate, handleChangeInput, value }) {
@@ -32,10 +36,10 @@ export default function ExerciseInput({ handleCreate, handleChangeInput, value }
                         value={value}
                         onChange={handleChangeInput}
                         variant="standard"
-
                     />
-
-
+                    <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+                        <AddIcon />
+                    </IconButton>
                 </Stack>
 
                 <Stack direction="row">
@@ -53,7 +57,6 @@ export default function ExerciseInput({ handleCreate, handleChangeInput, value }
                         label="repetitions"
                     />
                     <TextField
-
                         placeholder="Sets"
                         inputProps={{ 'aria-label': 'sets' }}
                         sx={{ margin: 1 }}
@@ -66,17 +69,35 @@ export default function ExerciseInput({ handleCreate, handleChangeInput, value }
                         variant="outlined"
                         label="sets"
                     />
+                    <TextField
+                        placeholder="Weight"
+                        inputProps={{ 'aria-label': 'Weight' }}
+                        sx={{ margin: 1 }}
+                        fullWidth
+                        size='small'
+                        required
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        defaultValue={4}
+                        variant="outlined"
+                        label="weight"
+                    />
+                    <Checkbox
+                        id="public"
 
+                        checked={true}
+                        icon={<PublicOffIcon />}
+                        checkedIcon={<PublicIcon />}
+                    />
                 </Stack>
 
             </FormControl>
-            <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-                <AddIcon />
-            </IconButton>
-            <FormGroup sx={{ ml: 1, flex: 1 }}>
-                <FormControlLabel control={<Switch label="public" />} label="Global" />
-            </FormGroup>
 
+            <FormGroup sx={{ ml: 1, flex: 1 }}>
+                <IconButton >
+                    <SwapHorizIcon />
+                </IconButton>
+            </FormGroup>
         </Paper >
     )
 }
